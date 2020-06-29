@@ -1,28 +1,54 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    
+    <character-detail :character="selectedCharacter"></character-detail>
+    <characters-list :characters="characters"></characters-list>
+
+
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import {eventBus} from './main.js'
+import CharactersList from './components/CharactersList.vue'
+import CharacterDetail from './components/CharacterDetail'
 
 export default {
+  data(){
+    return{
+      characters: [],
+      selectedCharacter: null
+    }
+
+  },
   name: 'App',
   components: {
-    HelloWorld
-  }
+    "characters-list": CharactersList,
+    "character-detail": CharacterDetail
+    
+  },
+
+ mounted() {
+    fetch('https://rickandmortyapi.com/api/character')
+    .then(res => res.json())
+    .then(characters => this.characters = characters.results)
+
+    eventBus.$on('character-selected', (character) => {
+      this.selectedCharacter = character
+    })
+    
+ }
 }
 </script>
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  color: #eff7ff;
+  background-image: url("./assets/wallpaper.jpg");
+  
 }
+
 </style>
